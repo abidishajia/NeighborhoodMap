@@ -166,29 +166,29 @@ var ViewModel = function() {
     }
 
     //Credit: Live Help Expert 
-    this.filterSearch = function(){
-        infoWindow.close();
-        var inputSearch = this.inputText();
-        if (inputSearch.length === 0){
+    this.filterSearch = ko.computed(function(){
+        //infowindow.close();
+        if (self.inputSearch().length === 0){
             this.showAll(true);
+            /*return self.area(); if I use instead of the previous line it doesn't give me erros but it doesn't work.*/
         } else{
-            for(var i=0; i<area.length; i++){
-                if(area[i].title.toLowerCase().indexOf(inputSearch.toLowerCase()) > -1){
-                    area[i].show();
-                    area[i].setVisible(true);
+            for(var i=0; i<self.area().length; i++){
+                if(self.area()[i].title.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
+                    self.area()[i].show();
+                    self.area()[i].setVisible(true);
                 } else{
-                    area[i].show(false);
-                    area[i].setVisible(false);
+                    self.area()[i].show(false);
+                    self.area()[i].setVisible(false);
                 }
             }
         }
-        infowindow.close();
-    };
+       //infowindow.close();
+    }, self);
 
     this.showAll = function(variable){
-        for(var i=0; i<area.length; i++){
-            area[i].show(variable);
-            area[i].setVisible(variable);
+        for(var i=0; i<self.area().length; i++){
+            self.area()[i].show(variable);
+            self.area()[i].setVisible(variable);
         }
     };
 }
@@ -197,3 +197,4 @@ var ViewModel = function() {
 viewModel = new ViewModel();
 
 ko.applyBindings(viewModel);
+
