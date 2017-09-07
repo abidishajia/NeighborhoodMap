@@ -44,6 +44,7 @@ var locations = [{
 ];
 
 function initMap() {
+    viewModel = new ViewModel();
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {
             lat: 37.7749,
@@ -80,6 +81,7 @@ function initMap() {
         viewModel.area()[i].marker = marker;
 
         map.fitBounds(bounds);
+        ko.applyBindings(viewModel);
 
     } // ends the for loop
 
@@ -146,6 +148,7 @@ var Neighborhood = function(data, marker) {
     this.marker = marker;
     this.type = data.type;
     this.show = ko.observable('true');
+    this.setVisible = ko.observable();
 }
 
 var ViewModel = function() {
@@ -169,32 +172,35 @@ var ViewModel = function() {
     this.filterSearch = ko.computed(function(){
         //infowindow.close();
         if (self.inputSearch().length === 0){
-            this.showAll(true);
-            /*return self.area(); if I use instead of the previous line it doesn't give me erros but it doesn't work.*/
+            //this.showAll(true);
+               for(var i=0; i<self.area().length; i++){
+                    self.area()[i].show();
+                    self.setVisible(true);
+                }
         } else{
             for(var i=0; i<self.area().length; i++){
                 if(self.area()[i].title.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
                     self.area()[i].show();
-                    self.area()[i].setVisible(true);
+                    self.setVisible(true);
                 } else{
                     self.area()[i].show(false);
-                    self.area()[i].setVisible(false);
+                    self.setVisible(false);
                 }
             }
         }
        //infowindow.close();
     }, self);
 
-    this.showAll = function(variable){
+    /*this.showAll = function(variable){
         for(var i=0; i<self.area().length; i++){
             self.area()[i].show(variable);
-            self.area()[i].setVisible(variable);
+            self.setVisible(variable);
         }
-    };
+    };*/
 }
     
 
-viewModel = new ViewModel();
+//viewModel = new ViewModel();
 
-ko.applyBindings(viewModel);
+//ko.applyBindings(viewModel);
 
