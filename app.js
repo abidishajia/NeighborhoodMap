@@ -81,7 +81,7 @@ function initMap() {
         viewModel.area()[i].marker = marker;
 
         map.fitBounds(bounds);
-        ko.applyBindings(viewModel);
+        
 
     } // ends the for loop
 
@@ -132,6 +132,7 @@ function initMap() {
         
         infowindow.open(map, marker);
     }
+      ko.applyBindings(viewModel);
 }
 
 // Alert the user if google maps isn't working
@@ -170,24 +171,30 @@ var ViewModel = function() {
 
     //Credit: Live Help Expert 
     this.filterSearch = ko.computed(function(){
-        //infowindow.close();
-        if (self.inputSearch().length === 0){
-               for(var i=0; i<self.area().length; i++){
-                    return self.area();
-                    self.area()[i].setVisible(true);
-                }
-        } else{
-            for(var i=0; i<self.area().length; i++){
+        
+        //largeInfowindow.close();
+        if (self.inputSearch().length === 0){ 
+            for(var i=0; i<self.area().length; i++){ 
+                 return self.area(); 
+                 self.area()[i].setVisible(true);
+            } 
+            return self.area();
+        } else { 
+            for(var i=0; i<self.area().length; i++){ 
                 if(self.area()[i].title.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
-                    self.area()[i].show();
-                    self.area()[i].setVisible(true);
-                } else{
-                    self.area()[i].show(false);
-                    self.area()[i].setVisible(false);
-                }
-            }
-        }
-       //infowindow.close();
+                     self.area()[i].show(); 
+                     self.area()[i].setVisible(true); 
+                 } else { 
+                    self.area()[i].show(false); 
+                    self.area()[i].setVisible(false); }
+                 } 
+            var search = self.inputSearch(); 
+            return ko.utils.arrayFilter(self.area(), function (loc){ 
+                var result = loc.name.toLowerCase().indexOf(search) >= 0; 
+                return result; 
+            });
+        } 
+       //largeInfowindow.close();
     }, self);
 }
     
