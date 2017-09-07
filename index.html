@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <!-- Knockout.js-->
+    <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js" type="text/javascript"></script> 
+    <title> Final </title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div id ="sidebar">
+        <div id = "search">
+            <input type="text" placeholder="Search" data-bind="textInput: inputSearch">
+        </div> 
+ 
+         <!-- <span> Filter By: </span>
+            <select data-bind="options: locationTypes, value: selectedOption"></select>  -->
+
+        <ul data-bind="foreach: area" id = 'listView'> 
+            <li data-bind="text: name, click: $root.openUp, visible: show" id ='listItem'></li>
+        </ul>
+    </div>
+
+    <div id="map"> </div> 
+
+
+<script src="app.js"></script>
+<script async defer 
+        src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyCgkdN5CQGhTgNRwNzp8I-8b3WCEm4hTSo&v=3&callback=initMap">
+</script> 
+
+</body>
+</html> 
+
