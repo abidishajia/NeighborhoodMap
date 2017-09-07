@@ -156,7 +156,7 @@ var ViewModel = function() {
     //this.locationTypes = ko.observableArray(["All", "Food and Drink", "Entertainment"]);
     self.area = ko.observableArray([]);
     this.inputSearch = ko.observable("");
-    this.setVisible = ko.observable("");
+    //this.setVisible = ko.observable("");
 
     locations.forEach(function(placeItem) {
         self.area.push(new Neighborhood(placeItem));
@@ -172,35 +172,23 @@ var ViewModel = function() {
     this.filterSearch = ko.computed(function(){
         //infowindow.close();
         if (self.inputSearch().length === 0){
-            //this.showAll(true);
                for(var i=0; i<self.area().length; i++){
-                    self.area()[i].show();
-                    self.setVisible(true);
+                    return self.area();
+                    self.area()[i].setVisible(true);
                 }
         } else{
             for(var i=0; i<self.area().length; i++){
                 if(self.area()[i].title.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
                     self.area()[i].show();
-                    self.setVisible(true);
+                    self.area()[i].setVisible(true);
                 } else{
                     self.area()[i].show(false);
-                    self.setVisible(false);
+                    self.area()[i].setVisible(false);
                 }
             }
         }
        //infowindow.close();
     }, self);
-
-    /*this.showAll = function(variable){
-        for(var i=0; i<self.area().length; i++){
-            self.area()[i].show(variable);
-            self.setVisible(variable);
-        }
-    };*/
 }
     
-
-//viewModel = new ViewModel();
-
-//ko.applyBindings(viewModel);
 
