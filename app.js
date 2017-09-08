@@ -7,23 +7,26 @@ var locations = [{
         location: {
             lat: 37.787994,
             lng: -122.407437
-        }
+        },
+        foursquareID: '40bbc700f964a520b1001fe3'
     },
     {
-        title: 'Islamic Society of San Francisco',
-        type: 'Mosque',
+        title: 'Tiled Steps',
+        type: 'Entertainment',
         location: {
-            lat: 37.781474,
-            lng: -122.411886
-        }
+            lat: 37.756271,
+            lng: -122.473175
+        },
+        foursquareID: '4b6f45c8f964a5207ae82ce3'
     },
     {
-        title: 'Chutney',
-        type: 'Food',
+        title: 'Twin Peaks',
+        type: 'Entertainment',
         location: {
-            lat: 37.786029,
-            lng: -122.413293
-        }
+            lat: 37.754407,
+            lng: -122.447684
+        },
+        foursquareID: '4c29567f9fb5d13aa2139b57'
     },
     {
         title: 'Golden Gate Park',
@@ -31,15 +34,17 @@ var locations = [{
         location: {
             lat: 37.768391,
             lng: -122.47543
-        }
+        },
+        foursquareID: '445e36bff964a520fb321fe3'
     },
     {
-        title: 'AT&T Park',
+        title: 'Pier 39',
         type: 'Entertainment',
         location: {
-            lat: 37.778595,
-            lng: -122.38927
-        }
+            lat: 37.808382,
+            lng: -122.41042
+        },
+        foursquareID: '409d7480f964a520f2f21ee3'
     }
 ];
 
@@ -63,13 +68,15 @@ function initMap() {
         // Get the position from the location array.
         var position = locations[i].location;
         var title = locations[i].title;
+        var foursquareID = locations[i].foursquareID;
         // Create a marker per location, and put into markers array.
         var marker = new google.maps.Marker({
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
             id: i,
-            map: map
+            map: map,
+            foursquareID: foursquareID
         });
         marker.addListener('click', toggleBounce);
         markers.push(marker);
@@ -88,10 +95,11 @@ function initMap() {
         });
 
         function toggleBounce() {
-            if (this.getAnimation() !== null) {
-                this.setAnimation(null);
+            var marker = this;
+            if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
             } else {
-                this.setAnimation(google.maps.Animation.BOUNCE);
+                marker.setAnimation(google.maps.Animation.BOUNCE);
                 setTimeout(function(){ 
                     marker.setAnimation(null);
                 }, 1400);
@@ -128,28 +136,27 @@ function initMap() {
                 marker.setAnimation= null;
             });
         }
+        var lat = marker.position.lat();
+        var lng = marker.position.lng();
+        var foursquareID = marker.foursquareID;
 
-        /*var clientID = 'GOSFGAOZKCSLMWADY1ORYJV2A4GUNNHAHBVWY500S1IM42CS';
+        var clientID = 'GOSFGAOZKCSLMWADY1ORYJV2A4GUNNHAHBVWY500S1IM42CS';
         var clientSecret = '0AXAROY0WO5DJYVTZYN0UVJ3BE0KTPK54WSYPZPX0BY2UMHP';
-        var url = 'https://api.foursquare.com/v2/venues/search?ll='+ this.lat + ',' + this.lng + '&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20160118' + '&query=' + this.name;
+        //var url = 'https://api.foursquare.com/v2/venues/search?ll='+ this.lat + ',' + this.lng + '&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20160118' + '&query=' + this.name;
 
+        var url = 'https://api.foursquare.com/v2/venues/' + foursquareID + '?client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20160118';
         $.ajax({
             dataType: "json",
             url: url,
             success: function(data) {
-                var result = data.response.venue;
-                console.log(result);
+                var results = data.response.venues[0];
+                //console.log(data);
+                self.description = results.description;
             },
             error: function(e) {
                 alert("There was an error");
             }
-        });*/
-
-       /* function changeColor() {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].color = highlightedIcon;
-            }
-        };*/
+        });
         
         infowindow.open(map, marker);
     }
