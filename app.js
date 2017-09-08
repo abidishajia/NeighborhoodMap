@@ -100,16 +100,16 @@ function initMap() {
                 marker.setAnimation(null);
             } else {
                 marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(function(){ 
+                setTimeout(function() {
                     marker.setAnimation(null);
                 }, 1400);
             }
         }
-   
+
         viewModel.area()[i].marker = marker;
 
         map.fitBounds(bounds);
-        
+
 
     } // ends the for loop
 
@@ -128,12 +128,12 @@ function initMap() {
     function populateInfoWindow(marker, infowindow) {
         if (infowindow.marker != marker) {
             infowindow.marker = marker;
-            infowindow.setContent('<div>' + marker.title + '</div>');
+
             infowindow.open(map, marker);
             // Make sure the marker property is cleared if the infowindow is closed.
             infowindow.addListener('closeclick', function() {
                 infowindow.setMarker = null;
-                marker.setAnimation= null;
+                marker.setAnimation = null;
             });
         }
         var lat = marker.position.lat();
@@ -151,20 +151,16 @@ function initMap() {
             success: function(data) {
                 var results = data.response.venue;
                 //console.log(data);
-                self.description = results.description;
+                var description = results.description;
+                infowindow.setContent('<div>' + marker.title + '</div>' + '<div>' + description + "</div>");
+                infowindow.open(map, marker);
             },
             error: function(e) {
                 alert("There was an error");
             }
         });
-
-        this.contentString = '<div>' + self.description + "</div>"; 
-        
-
-        
-        infowindow.open(map, marker);
     }
-      ko.applyBindings(viewModel);
+    ko.applyBindings(viewModel);
 }
 
 // Alert the user if google maps isn't working
@@ -186,7 +182,6 @@ var Neighborhood = function(data, marker) {
 
 var ViewModel = function() {
     var self = this;
-    //this.locationTypes = ko.observableArray(["All", "Food and Drink", "Entertainment"]);
     self.area = ko.observableArray([]);
     this.inputSearch = ko.observable("");
 
@@ -196,37 +191,36 @@ var ViewModel = function() {
 
     //Credit: https://discussions.udacity.com/t/using-knockout-for-a-function/199182/2
     self.openUp = function(placeItem) {
-       console.log('Works');
-       google.maps.event.trigger(placeItem.marker, 'click');
+        //console.log('Works');
+        google.maps.event.trigger(placeItem.marker, 'click');
     }
-    
-    //Credit: Live Help Expert 
-    this.filterSearch = ko.computed(function(){
-     
-        if (self.inputSearch().length === 0){ 
-            for(var i=0; i<self.area().length; i++){ 
-                if (self.area()[i].marker){ 
+
+    //Filter Search 
+    this.filterSearch = ko.computed(function() {
+
+        if (self.inputSearch().length === 0) {
+            for (var i = 0; i < self.area().length; i++) {
+                if (self.area()[i].marker) {
                     self.area()[i].marker.setVisible(true);
                 }
                 self.area()[i].show(true);
-            } 
+            }
             return self.area();
-        } else { 
-            for(var i=0; i<self.area().length; i++){ 
-                if(self.area()[i].name.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
-                     self.area()[i].show(); 
-                     self.area()[i].marker.setVisible(true);
-                 } else { 
-                    self.area()[i].show(false); 
-                    self.area()[i].marker.setVisible(false); }
-                 } 
-            var search = self.inputSearch(); 
-            return ko.utils.arrayFilter(self.area(), function (loc){ 
-                var result = loc.name.toLowerCase().indexOf(search) >= 0; 
-                return result; 
+        } else {
+            for (var i = 0; i < self.area().length; i++) {
+                if (self.area()[i].name.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1) {
+                    self.area()[i].show();
+                    self.area()[i].marker.setVisible(true);
+                } else {
+                    self.area()[i].show(false);
+                    self.area()[i].marker.setVisible(false);
+                }
+            }
+            var search = self.inputSearch();
+            return ko.utils.arrayFilter(self.area(), function(loc) {
+                var result = loc.name.toLowerCase().indexOf(search) >= 0;
+                return result;
             });
-        } 
+        }
     }, self);
 }
-    
-
