@@ -71,6 +71,7 @@ function initMap() {
             id: i,
             map: map
         });
+        marker.addListener('click', toggleBounce);
         markers.push(marker);
         bounds.extend(marker.position);
 
@@ -78,6 +79,25 @@ function initMap() {
             populateInfoWindow(this, largeInfowindow);
         });
 
+        marker.addListener('mouseover', function() {
+            this.setIcon(highlightedIcon);
+        });
+
+        marker.addListener('mouseout', function() {
+            this.setIcon(defaultIcon);
+        });
+
+        function toggleBounce() {
+            if (this.getAnimation() !== null) {
+                this.setAnimation(null);
+            } else {
+                this.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function(){ 
+                    marker.setAnimation(null);
+                }, 1400);
+            }
+        }
+   
         viewModel.area()[i].marker = marker;
 
         map.fitBounds(bounds);
@@ -105,6 +125,7 @@ function initMap() {
             // Make sure the marker property is cleared if the infowindow is closed.
             infowindow.addListener('closeclick', function() {
                 infowindow.setMarker = null;
+                marker.setAnimation= null;
             });
         }
 
@@ -124,11 +145,11 @@ function initMap() {
             }
         });*/
 
-        function changeColor() {
+       /* function changeColor() {
             for (var i = 0; i < markers.length; i++) {
                 markers[i].color = highlightedIcon;
             }
-        };
+        };*/
         
         infowindow.open(map, marker);
     }
@@ -157,7 +178,6 @@ var ViewModel = function() {
     //this.locationTypes = ko.observableArray(["All", "Food and Drink", "Entertainment"]);
     self.area = ko.observableArray([]);
     this.inputSearch = ko.observable("");
-    //this.setVisible = ko.observable("");
 
     locations.forEach(function(placeItem) {
         self.area.push(new Neighborhood(placeItem));
@@ -168,25 +188,26 @@ var ViewModel = function() {
        console.log('Works');
        google.maps.event.trigger(placeItem.marker, 'click');
     }
-
+    
     //Credit: Live Help Expert 
     this.filterSearch = ko.computed(function(){
-        
-        //largeInfowindow.close();
+     
         if (self.inputSearch().length === 0){ 
             for(var i=0; i<self.area().length; i++){ 
-                 return self.area(); 
-                 self.area()[i].setVisible(true);
+                if (self.area()[i].marker){ 
+                    self.area()[i].marker.setVisible(true);
+                }
+                self.area()[i].show(true);
             } 
             return self.area();
         } else { 
             for(var i=0; i<self.area().length; i++){ 
-                if(self.area()[i].title.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
+                if(self.area()[i].name.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1){
                      self.area()[i].show(); 
-                     self.area()[i].setVisible(true); 
+                     self.area()[i].marker.setVisible(true);
                  } else { 
                     self.area()[i].show(false); 
-                    self.area()[i].setVisible(false); }
+                    self.area()[i].marker.setVisible(false); }
                  } 
             var search = self.inputSearch(); 
             return ko.utils.arrayFilter(self.area(), function (loc){ 
@@ -194,7 +215,6 @@ var ViewModel = function() {
                 return result; 
             });
         } 
-       //largeInfowindow.close();
     }, self);
 }
     
