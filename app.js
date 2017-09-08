@@ -149,7 +149,7 @@ function initMap() {
             dataType: "json",
             url: url,
             success: function(data) {
-                var results = data.response.venues[0];
+                var results = data.response.venue;
                 //console.log(data);
                 self.description = results.description;
             },
@@ -157,6 +157,10 @@ function initMap() {
                 alert("There was an error");
             }
         });
+
+        this.contentString = '<div>' + self.description + "</div>"; 
+        
+
         
         infowindow.open(map, marker);
     }
