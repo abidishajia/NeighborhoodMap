@@ -59,6 +59,22 @@ function initMap() {
         disableDefaultUI: true
     });
 
+    function toggleBounce() {
+        var marker = this;
+        if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+        } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+                marker.setAnimation(null);
+            }, 1400);
+        }
+    }
+
+    function clickListener(marker,largeInfowindow){ 
+        populateInfoWindow(marker, largeInfowindow); 
+    };
+
     var largeInfowindow = new google.maps.InfoWindow();
     var defaultIcon = makeMarkerIcon('0091ff');
     var highlightedIcon = makeMarkerIcon('FFFF24');
@@ -78,41 +94,18 @@ function initMap() {
             map: map,
             foursquareID: foursquareID
         });
+
         marker.addListener('click', toggleBounce);
+        marker.addListener('click', clickListener(marker,largeInfowindow));
+
         markers.push(marker);
         bounds.extend(marker.position);
-
-        marker.addListener('click', function() {
-            populateInfoWindow(this, largeInfowindow);
-        });
-
-        marker.addListener('mouseover', function() {
-            this.setIcon(highlightedIcon);
-        });
-
-        marker.addListener('mouseout', function() {
-            this.setIcon(defaultIcon);
-        });
-
-        function toggleBounce() {
-            var marker = this;
-            if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
-            } else {
-                marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(function() {
-                    marker.setAnimation(null);
-                }, 1400);
-            }
-        }
 
         viewModel.area()[i].marker = marker;
 
         map.fitBounds(bounds);
 
-
     } // ends the for loop
-
 
     function makeMarkerIcon(markerColor) {
         var markerImage = new google.maps.MarkerImage(
@@ -125,6 +118,7 @@ function initMap() {
         return markerImage;
     }
 
+
     function populateInfoWindow(marker, infowindow) {
         if (infowindow.marker != marker) {
             infowindow.marker = marker;
@@ -136,6 +130,7 @@ function initMap() {
                 marker.setAnimation = null;
             });
         }
+
         var lat = marker.position.lat();
         var lng = marker.position.lng();
         var foursquareID = marker.foursquareID;
@@ -178,7 +173,7 @@ var Neighborhood = function(data, marker) {
     this.type = data.type;
     this.show = ko.observable('true');
     this.setVisible = ko.observable();
-}
+};
 
 var ViewModel = function() {
     var self = this;
@@ -193,13 +188,13 @@ var ViewModel = function() {
     self.openUp = function(placeItem) {
         //console.log('Works');
         google.maps.event.trigger(placeItem.marker, 'click');
-    }
+    };
 
     //Filter Search 
     this.filterSearch = ko.computed(function() {
 
         if (self.inputSearch().length === 0) {
-            for (var i = 0; i < self.area().length; i++) {
+            for (i = 0; i < self.area().length; i++) {
                 if (self.area()[i].marker) {
                     self.area()[i].marker.setVisible(true);
                 }
@@ -207,7 +202,7 @@ var ViewModel = function() {
             }
             return self.area();
         } else {
-            for (var i = 0; i < self.area().length; i++) {
+            for (i = 0; i < self.area().length; i++) {
                 if (self.area()[i].name.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1) {
                     self.area()[i].show();
                     self.area()[i].marker.setVisible(true);
@@ -223,4 +218,4 @@ var ViewModel = function() {
             });
         }
     }, self);
-}
+};
