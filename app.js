@@ -71,10 +71,6 @@ function initMap() {
         }
     }
 
-    function clickListener(marker,largeInfowindow){ 
-        populateInfoWindow(marker, largeInfowindow); 
-    };
-
     var largeInfowindow = new google.maps.InfoWindow();
     var defaultIcon = makeMarkerIcon('0091ff');
     var highlightedIcon = makeMarkerIcon('FFFF24');
@@ -96,7 +92,9 @@ function initMap() {
         });
 
         marker.addListener('click', toggleBounce);
-        marker.addListener('click', clickListener(marker,largeInfowindow));
+        marker.addListener('click', function() { 
+            populateInfoWindow(this, largeInfowindow); 
+        }); 
 
         markers.push(marker);
         bounds.extend(marker.position);
