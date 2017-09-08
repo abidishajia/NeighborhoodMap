@@ -121,6 +121,7 @@ function initMap() {
 
 
     function populateInfoWindow(marker, infowindow) {
+        infowindow.setContent('');
         if (infowindow.marker != marker) {
             infowindow.marker = marker;
 
@@ -205,7 +206,7 @@ var ViewModel = function() {
         } else {
             for (i = 0; i < self.area().length; i++) {
                 if (self.area()[i].name.toLowerCase().indexOf(self.inputSearch().toLowerCase()) > -1) {
-                    self.area()[i].show();
+                    self.area()[i].show(true);
                     self.area()[i].marker.setVisible(true);
                 } else {
                     self.area()[i].show(false);

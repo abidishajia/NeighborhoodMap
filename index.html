@@ -16,9 +16,6 @@
         <div id = "search">
             <input type="text" placeholder="Search" data-bind="textInput: inputSearch">
         </div> 
- 
-         <!-- <span> Filter By: </span>
-            <select data-bind="options: locationTypes, value: selectedOption"></select>  -->
 
         <ul data-bind="foreach: area" id = 'listView'> 
             <li data-bind="text: name, click: $root.openUp, visible: show" id ='listItem'></li>
